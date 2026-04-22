@@ -16,33 +16,10 @@ public class KundenApp {
                 case "2" -> kundeAnlegen();
                 case "3" -> kundenAnzeigen();
                 case "4" -> kundeAnzeigen();
+                case "5" -> kundeLoeschen();
                 case null, default -> startmenu();
             }
         } while (!Objects.equals(menu, "0"));
-    }
-
-    static void useMenu() {
-        boolean isValid = false;
-        while (!isValid) {
-            try {
-                System.out.print("Auswahl: ");
-                String inputLine = scanner.nextLine();
-
-                if (Objects.equals(inputLine, "0")
-                        || Objects.equals(inputLine, "1")
-                        || Objects.equals(inputLine, "2")
-                        || Objects.equals(inputLine, "3")
-                        || Objects.equals(inputLine, "4")) {
-                    menu = inputLine;
-                    isValid = true;
-                } else {
-                    System.out.println("Fehler: Bitte nur Zahlen von 0 bis 4 eingeben.");
-                }
-            } catch (Exception e) {
-                System.out.println("Fehler: Ungültige Eingabe (keine Zahl).");
-
-            }
-        }
     }
 
     static void startmenu() {
@@ -50,9 +27,11 @@ public class KundenApp {
         System.out.println("2 - Neuen Kunden anlegen");
         System.out.println("3 - Alle Kunden anzeigen");
         System.out.println("4 - Kunde anzeigen/bearbeiten");
+        System.out.println("5 - Kunde löschen");
         System.out.println("0 - Programm beenden");
-        useMenu();
-
+        System.out.print("Auswahl: ");
+        menu = scanner.nextLine();
+        // useMenu();
     }
 
     static void kundeAnlegen() {
@@ -89,6 +68,8 @@ public class KundenApp {
     }
 
     static void kundenAnzeigen() {
+        System.out.println();
+        if (kunden.isEmpty()) System.out.println("Keine Kunden vorhanden");
         for (Kunde kunde : kunden) {
             formatierteKundenAusgabe(kunde);
         }
@@ -102,9 +83,37 @@ public class KundenApp {
         System.out.print("Nachname: ");
         String nachname = scanner.nextLine();
         Kunde kunde = KundenListe.getKundeByName(vorname, nachname);
-        formatierteKundenAusgabe(kunde);
+        if (kunde == null) {
+            System.out.println("Kunde nicht gefunden");
+            kundenAnzeigen();
+        } else {
+            formatierteKundenAusgabe(kunde);
+        }
         System.out.println();
         editKunde(kunde);
+        startmenu();
+    }
+
+    static void kundeLoeschen() {
+        System.out.print("Vorname: ");
+        String vorname = scanner.nextLine();
+        System.out.print("Nachname: ");
+        String nachname = scanner.nextLine();
+        Kunde kunde = KundenListe.getKundeByName(vorname, nachname);
+        if (kunde == null) {
+            System.out.println("Kunde nicht gefunden");
+            kundenAnzeigen();
+        } else {
+            formatierteKundenAusgabe(kunde);
+        }
+        System.out.println();
+        System.out.println("Sind Sie sicher, dass Sie diesen Kunden löschen wollen? j/n");
+        String confirm = scanner.nextLine();
+        if (confirm.equalsIgnoreCase("j")) {
+            KundenListe.deleteKunde(kunde);
+        } else {
+            startmenu();
+        }
         startmenu();
     }
 

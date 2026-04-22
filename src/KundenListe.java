@@ -16,6 +16,11 @@ public class KundenListe {
                 .orElse(null);
     }
 
+    public static void deleteKunde(Kunde kunde) {
+        kunden.remove(kunde);
+
+    }
+
     public static ArrayList<Kunde> getKunden() {
         return kunden;
     }
